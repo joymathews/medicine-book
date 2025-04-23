@@ -10,6 +10,10 @@ function Home() {
     medicineName: '',
     doctor: '',
     purpose: '',
+    prescriptionDate: '',
+    durationValue: '',
+    durationType: 'days', // days, weeks, months, years, lifelong
+    notes: '',
     morningDose: false,
     morningFoodRelation: 'after',
     noonDose: false,
@@ -31,6 +35,14 @@ function Home() {
       ...prevData,
       [name]: type === 'checkbox' ? checked : value
     }));
+    
+    // When durationType is set to lifelong, clear the duration value
+    if (name === 'durationType' && value === 'lifelong') {
+      setFormData(prevData => ({
+        ...prevData,
+        durationValue: ''
+      }));
+    }
   };
 
   const handleCustomTimeChange = (e) => {
@@ -80,6 +92,10 @@ function Home() {
         medicineName: '',
         doctor: '',
         purpose: '',
+        prescriptionDate: '',
+        durationValue: '',
+        durationType: 'days',
+        notes: '',
         morningDose: false,
         morningFoodRelation: 'after',
         noonDose: false,
@@ -207,6 +223,62 @@ function Home() {
               value={formData.purpose}
               onChange={handleChange}
               placeholder="What is this medicine for?"
+            ></textarea>
+          </div>
+          
+          {/* Prescription Date */}
+          <div className="form-group">
+            <label htmlFor="prescriptionDate">Prescription Date</label>
+            <input
+              type="date"
+              id="prescriptionDate"
+              name="prescriptionDate"
+              value={formData.prescriptionDate}
+              onChange={handleChange}
+              className="date-input"
+            />
+          </div>
+          
+          {/* Modified Duration Field - Dropdown First */}
+          <div className="form-group">
+            <label>Duration</label>
+            <div className="duration-container reversed">
+              <select
+                name="durationType"
+                value={formData.durationType}
+                onChange={handleChange}
+                className="duration-select"
+              >
+                <option value="days">Days</option>
+                <option value="weeks">Weeks</option>
+                <option value="months">Months</option>
+                <option value="years">Years</option>
+                <option value="lifelong">Lifelong</option>
+              </select>
+              
+              <input
+                type="number"
+                name="durationValue"
+                value={formData.durationValue}
+                onChange={handleChange}
+                placeholder="Duration"
+                min="1"
+                disabled={formData.durationType === 'lifelong'}
+                className={formData.durationType === 'lifelong' ? 'disabled-input' : ''}
+              />
+            </div>
+          </div>
+          
+          {/* Notes (Replacing Recurrence) */}
+          <div className="form-group">
+            <label htmlFor="notes">Notes</label>
+            <textarea
+              id="notes"
+              name="notes"
+              value={formData.notes}
+              onChange={handleChange}
+              placeholder="Any additional instructions or notes"
+              className="notes-textarea"
             ></textarea>
           </div>
           
