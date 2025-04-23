@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { auth } from '../configurations/firebase';
 import { signOut } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
@@ -13,6 +13,10 @@ function Home() {
     prescriptionDate: '',
     durationValue: '',
     durationType: 'days', // days, weeks, months, years, lifelong
+    recurrencePattern: 'daily', // daily, alternate, custom, weekly, biweekly, monthly
+    recurrenceInterval: '1', // Used for "every X days" pattern
+    specificDays: [], // For weekly patterns - which days of week
+    specificDates: [], // For monthly patterns - which dates of month
     notes: '',
     morningDose: false,
     morningFoodRelation: 'after',
@@ -28,6 +32,64 @@ function Home() {
     time: '',
     foodRelation: 'after'
   });
+
+  // Get available recurrence patterns based on duration type
+  const getRecurrenceOptions = () => {
+    switch(formData.durationType) {
+      case 'days':
+        return [
+          { value: 'daily', label: 'Daily' },
+          { value: 'alternate', label: 'Alternate days' },
+          { value: 'custom', label: 'Every X days' }
+        ];
+      case 'weeks':
+        return [
+          { value: 'daily', label: 'Daily' },
+          { value: 'alternate', label: 'Alternate days' },
+          { value: 'custom', label: 'Every X days' },
+          { value: 'specificDays', label: 'Specific days of week' }
+        ];
+      case 'months':
+      case 'years':
+        return [
+          { value: 'daily', label: 'Daily' },
+          { value: 'alternate', label: 'Alternate days' },
+          { value: 'custom', label: 'Every X days' },
+          { value: 'weekly', label: 'Weekly' },
+          { value: 'biweekly', label: 'Bi-weekly' },
+          { value: 'specificDays', label: 'Specific days of week' },
+          { value: 'specificDates', label: 'Specific dates of month' }
+        ];
+      case 'lifelong':
+        return [
+          { value: 'daily', label: 'Daily' },
+          { value: 'alternate', label: 'Alternate days' },
+          { value: 'custom', label: 'Every X days' },
+          { value: 'weekly', label: 'Weekly' },
+          { value: 'biweekly', label: 'Bi-weekly' },
+          { value: 'monthly', label: 'Monthly' },
+          { value: 'specificDays', label: 'Specific days of week' },
+          { value: 'specificDates', label: 'Specific dates of month' }
+        ];
+      default:
+        return [{ value: 'daily', label: 'Daily' }];
+    }
+  };
+
+  // Reset recurrence when duration type changes
+  useEffect(() => {
+    // If current recurrence pattern isn't valid for the new duration type, reset to daily
+    const validOptions = getRecurrenceOptions().map(option => option.value);
+    if (!validOptions.includes(formData.recurrencePattern)) {
+      setFormData(prevData => ({
+        ...prevData,
+        recurrencePattern: 'daily',
+        recurrenceInterval: '1',
+        specificDays: [],
+        specificDates: []
+      }));
+    }
+  }, [formData.durationType]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -78,6 +140,46 @@ function Home() {
     }));
   };
 
+  const handleDaySelection = (day) => {
+    setFormData(prevData => {
+      const updatedDays = [...prevData.specificDays];
+      
+      if (updatedDays.includes(day)) {
+        // Remove day if already selected
+        return {
+          ...prevData,
+          specificDays: updatedDays.filter(d => d !== day)
+        };
+      } else {
+        // Add day if not already selected
+        return {
+          ...prevData,
+          specificDays: [...updatedDays, day]
+        };
+      }
+    });
+  };
+
+  const handleDateSelection = (date) => {
+    setFormData(prevData => {
+      const updatedDates = [...prevData.specificDates];
+      
+      if (updatedDates.includes(date)) {
+        // Remove date if already selected
+        return {
+          ...prevData,
+          specificDates: updatedDates.filter(d => d !== date)
+        };
+      } else {
+        // Add date if not already selected
+        return {
+          ...prevData,
+          specificDates: [...updatedDates, date]
+        };
+      }
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -95,6 +197,10 @@ function Home() {
         prescriptionDate: '',
         durationValue: '',
         durationType: 'days',
+        recurrencePattern: 'daily',
+        recurrenceInterval: '1',
+        specificDays: [],
+        specificDates: [],
         notes: '',
         morningDose: false,
         morningFoodRelation: 'after',
@@ -169,6 +275,109 @@ function Home() {
       </div>
     );
   };
+  
+  // Render recurrence options based on selected pattern
+  const renderRecurrenceOptions = () => {
+    switch(formData.recurrencePattern) {
+      case 'custom':
+        return (
+          <div className="recurrence-detail">
+            <label>Take every</label>
+            <div className="interval-container">
+              <input
+                type="number"
+                name="recurrenceInterval"
+                value={formData.recurrenceInterval}
+                onChange={handleChange}
+                min="1"
+                max="30"
+                className="interval-input"
+              />
+              <span>days</span>
+            </div>
+          </div>
+        );
+      
+      case 'specificDays':
+        const daysOfWeek = [
+          { value: 'sun', label: 'Sun' },
+          { value: 'mon', label: 'Mon' },
+          { value: 'tue', label: 'Tue' },
+          { value: 'wed', label: 'Wed' },
+          { value: 'thu', label: 'Thu' },
+          { value: 'fri', label: 'Fri' },
+          { value: 'sat', label: 'Sat' }
+        ];
+        
+        return (
+          <div className="recurrence-detail">
+            <label>Select days of week:</label>
+            <div className="days-selector">
+              {daysOfWeek.map(day => (
+                <button
+                  key={day.value}
+                  type="button"
+                  className={`day-button ${formData.specificDays.includes(day.value) ? 'selected' : ''}`}
+                  onClick={() => handleDaySelection(day.value)}
+                >
+                  {day.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        );
+        
+      case 'specificDates':
+        const datesOfMonth = Array.from({ length: 31 }, (_, i) => i + 1);
+        
+        return (
+          <div className="recurrence-detail">
+            <label>Select dates of month:</label>
+            <div className="dates-selector">
+              {datesOfMonth.map(date => (
+                <button
+                  key={date}
+                  type="button"
+                  className={`date-button ${formData.specificDates.includes(date.toString()) ? 'selected' : ''}`}
+                  onClick={() => handleDateSelection(date.toString())}
+                >
+                  {date}
+                </button>
+              ))}
+            </div>
+          </div>
+        );
+        
+      default:
+        return null;
+    }
+  };
+
+  // Format recurrence for display
+  const formatRecurrenceDescription = () => {
+    switch(formData.recurrencePattern) {
+      case 'daily':
+        return 'Take every day';
+      case 'alternate':
+        return 'Take every other day';
+      case 'custom':
+        return `Take every ${formData.recurrenceInterval} day(s)`;
+      case 'weekly':
+        return 'Take once a week';
+      case 'biweekly':
+        return 'Take once every two weeks';
+      case 'monthly':
+        return 'Take once a month';
+      case 'specificDays':
+        if (formData.specificDays.length === 0) return 'No days selected';
+        return `Take on: ${formData.specificDays.map(day => day.charAt(0).toUpperCase() + day.slice(1)).join(', ')}`;
+      case 'specificDates':
+        if (formData.specificDates.length === 0) return 'No dates selected';
+        return `Take on date(s): ${formData.specificDates.join(', ')}`;
+      default:
+        return '';
+    }
+  };
 
   // Check if at least one time slot is selected
   const hasSelectedTimeSlot = formData.morningDose || formData.noonDose || 
@@ -239,7 +448,7 @@ function Home() {
             />
           </div>
           
-          {/* Modified Duration Field - Dropdown First */}
+          {/* Duration Field */}
           <div className="form-group">
             <label>Duration</label>
             <div className="duration-container reversed">
@@ -269,7 +478,32 @@ function Home() {
             </div>
           </div>
           
-          {/* Notes (Replacing Recurrence) */}
+          {/* Smart Recurrence Field */}
+          <div className="form-group">
+            <label>Recurrence Pattern</label>
+            <div className="recurrence-container">
+              <select
+                name="recurrencePattern"
+                value={formData.recurrencePattern}
+                onChange={handleChange}
+                className="recurrence-select"
+              >
+                {getRecurrenceOptions().map(option => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+              
+              <div className="recurrence-summary">
+                {formatRecurrenceDescription()}
+              </div>
+              
+              {renderRecurrenceOptions()}
+            </div>
+          </div>
+          
+          {/* Notes Field */}
           <div className="form-group">
             <label htmlFor="notes">Notes</label>
             <textarea
