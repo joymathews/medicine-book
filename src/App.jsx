@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Login from './components/Login';
-import Home from './components/Home';
+import AddMedicine from './components/AddMedicine/AddMedicine';
 import ProtectedRoute from './components/ProtectedRoute';
 import { auth } from './configurations/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -25,10 +25,10 @@ function App() {
     <Routes>
       <Route path="/" element={<Login setUser={setUser} />} />
       <Route 
-        path="/home" 
+        path="/add-medicine" 
         element={
           <ProtectedRoute user={user}>
-            <Home user={user} />
+            <AddMedicine user={user} />
           </ProtectedRoute>
         } 
       />
