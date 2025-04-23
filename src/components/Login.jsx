@@ -21,7 +21,7 @@ function Login({ setUser }) {
       const user = result.user;
       setUser(user);
       console.log('User logged in:', user);
-      navigate('/home');
+      navigate('/add-medicine');
     } catch (error) {
       console.error('Error during login:', error);
       setError('Failed to login. Please try again later.');
