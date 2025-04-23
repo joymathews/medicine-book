@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { auth, provider, signInWithPopup } from '../configurations/firebase'; 
+import { auth, provider, signInWithPopup } from '../configurations/firebase';
 import { useNavigate } from 'react-router-dom';
 import '../styles/login.css';
 import GoogleIcon from '../assets/google-icon.svg';
@@ -13,6 +13,10 @@ function Login({ setUser }) {
     setIsLoading(true);
     setError('');
     try {
+      // Set custom parameters to force account selection
+      provider.setCustomParameters({
+        prompt: 'select_account'
+      });
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
       setUser(user);
