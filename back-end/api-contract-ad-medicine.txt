@@ -8,7 +8,7 @@ POST /api/medicines
   "purpose": "string",
   "prescriptionDate": "string", // ISO date format
   "duration": {
-    "value": "number", // not required if durationType is LIFELONG
+    "value": "number", // not required if type is LIFELONG
     "type": "string" // "DAYS", "WEEKS", "MONTHS", "YEARS", "LIFELONG"
   },
   "recurrence": {
