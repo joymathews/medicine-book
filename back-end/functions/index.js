@@ -14,6 +14,7 @@ exports.addMedicine = functions.https.onRequest((req, res) => {
     try {
       // Method validation
       if (req.method !== 'POST') {
+        res.setHeader('Allow', 'POST');
         return res.status(405).json({ 
           success: false, 
           message: 'Method not allowed' 
