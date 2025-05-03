@@ -48,8 +48,14 @@ function validateRecurrence(data, errors) {
       errors.specificDates = 'Please select at least one date of the month';
     }
   }
+}
 
-  // Dosage validation - at least one time must be enabled
+/**
+ * Validates that at least one dosage time is enabled
+ * @param {Object} data - Medicine data to validate
+ * @param {Object} errors - Error accumulator object
+ */
+function validateDosage(data, errors) {
   if (data.dosage) {
     const hasMorning = data.dosage.morning && data.dosage.morning.enabled;
     const hasNoon = data.dosage.noon && data.dosage.noon.enabled;
@@ -59,10 +65,6 @@ function validateRecurrence(data, errors) {
     if (!hasMorning && !hasNoon && !hasNight && !hasCustomTimes) {
       errors.dosage = 'Please select at least one time to take the medicine';
     }
-  }
-
-  if (Object.keys(errors).length > 0) {
-    throw new ValidationError(errors);
   }
 }
 
