@@ -14,7 +14,11 @@ const authenticate = async (req) => {
     throw new AuthError('Authentication required');
   }
 
-  const idToken = authHeader.split('Bearer ')[1];
+  const parts = authHeader.split(' ');
+  if (parts.length !== 2 || parts[0] !== 'Bearer') {
+    throw new AuthError('Invalid Authorization header format');
+  }
+  const idToken = parts[1];
   try {
     const decodedToken = await auth.verifyIdToken(idToken);
     return decodedToken;
