@@ -8,19 +8,31 @@ const { ValidationError } = require('../errors/customErrors');
 function validateMedicineData(data) {
   const errors = {};
 
-  // Required field validation
+  validateMedicineName(data, errors);
+  validateDuration(data, errors);
+  validateRecurrence(data, errors);
+  validateDosage(data, errors);
+
+  if (Object.keys(errors).length > 0) {
+    throw new ValidationError(errors);
+  }
+}
+
+function validateMedicineName(data, errors) {
   if (!data.medicineName || data.medicineName.trim() === '') {
     errors.medicineName = 'Medicine name is required';
   }
+}
 
-  // Duration validation
+function validateDuration(data, errors) {
   if (data.duration) {
     if (data.duration.type !== 'LIFELONG' && (!data.duration.value || data.duration.value <= 0)) {
       errors.duration = 'Please enter a valid duration';
     }
   }
+}
 
-  // Recurrence validation
+function validateRecurrence(data, errors) {
   if (data.recurrence) {
     if (data.recurrence.pattern === 'CUSTOM' && (!data.recurrence.interval || data.recurrence.interval <= 0)) {
       errors.recurrence = 'Please enter a valid interval';
