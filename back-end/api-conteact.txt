@@ -1,0 +1,73 @@
+Contract
+
+POST /api/medicines 
+
+{
+  "medicineName": "string", // required
+  "doctor": "string",
+  "purpose": "string",
+  "prescriptionDate": "string", // ISO date format
+  "duration": {
+    "value": "number", // not required if durationType is LIFELONG
+    "type": "string" // "DAYS", "WEEKS", "MONTHS", "YEARS", "LIFELONG"
+  },
+  "recurrence": {
+    "pattern": "string", // "DAILY", "ALTERNATE", "CUSTOM", "WEEKLY", "BIWEEKLY", "MONTHLY", "SPECIFIC_DAYS", "SPECIFIC_DATES"
+    "interval": "number", // required if pattern is CUSTOM
+    "specificDays": ["string"], // required if pattern is SPECIFIC_DAYS, values: "MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"
+    "specificDates": ["number"] // required if pattern is SPECIFIC_DATES, values: 1-31
+  },
+  "dosage": {
+    "morning": {
+      "enabled": "boolean",
+      "foodRelation": "string" // "BEFORE", "WITH", "AFTER"
+    },
+    "noon": {
+      "enabled": "boolean",
+      "foodRelation": "string" // "BEFORE", "WITH", "AFTER"
+    },
+    "night": {
+      "enabled": "boolean",
+      "foodRelation": "string" // "BEFORE", "WITH", "AFTER"
+    },
+    "customTimes": [
+      {
+        "id": "string", // unique identifier
+        "time": "string", // 24-hour format, e.g., "14:30"
+        "foodRelation": "string" // "BEFORE", "WITH", "AFTER"
+      }
+    ]
+  },
+  "notes": "string",
+  "userId": "string" // ID of authenticated user
+}
+
+Success (200 OK)
+{
+  "success": true,
+  "medicineId": "string", // ID of the newly created medicine
+  "message": "Medicine details saved successfully!"
+}
+
+Validation Error (400 Bad Request){
+  "success": false,
+  "errors": {
+    "medicineName": "Medicine name is required",
+    "duration": "Please enter a valid duration",
+    "recurrence": "Please enter a valid interval",
+    "dosage": "Please select at least one time to take the medicine",
+    "specificDays": "Please select at least one day of the week",
+    "specificDates": "Please select at least one date of the month"
+  }
+}
+
+Authentication Error (401 Unauthorized)
+{
+  "success": false,
+  "message": "Authentication required"
+}
+
+Server Error (500 Internal Server Error){
+  "success": false,
+  "message": "An error occurred while processing your request"
+}
