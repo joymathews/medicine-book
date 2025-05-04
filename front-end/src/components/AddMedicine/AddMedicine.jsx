@@ -301,7 +301,28 @@ function AddMedicine() {
       setSubmitMessage(result.message || 'Medicine details saved successfully!');
       
       // Reset form and errors after successful submission
-      // ...existing code...
+      setFormData({
+        medicineName: '',
+        doctor: '',
+        purpose: '',
+        prescriptionDate: '',
+        durationValue: '',
+        durationType: DURATION_TYPES.DAYS,
+        recurrencePattern: RECURRENCE_PATTERNS.DAILY,
+        recurrenceInterval: '1',
+        specificDays: [],
+        specificDates: [],
+        notes: '',
+        morningDose: false,
+        morningFoodRelation: FOOD_RELATIONS.AFTER,
+        noonDose: false,
+        noonFoodRelation: FOOD_RELATIONS.AFTER,
+        nightDose: false,
+        nightFoodRelation: FOOD_RELATIONS.AFTER,
+        customTimes: []
+      });
+      setFormErrors({});
+      setCustomTimeError('');
     } catch (error) {
       console.error('Error saving medicine details:', error);
       setSubmitMessage(error.message || 'Failed to save medicine details. Please try again.');
