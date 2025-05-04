@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { auth, provider, signInWithPopup } from '../configurations/firebase';
 import { useNavigate } from 'react-router-dom';
-import '../styles/login.css';
+import '../styles/common.css';
+import '../styles/Login.css';
 import GoogleIcon from '../assets/google-icon.svg';
 
 function Login({ setUser }) {
@@ -21,7 +22,7 @@ function Login({ setUser }) {
       const user = result.user;
       setUser(user);
       console.log('User logged in:', user);
-      navigate('/add-medicine');
+      navigate('/medicines');
     } catch (error) {
       console.error('Error during login:', error);
       setError('Failed to login. Please try again later.');
@@ -31,19 +32,25 @@ function Login({ setUser }) {
   };
 
   return (
-    <div className="login-container">
-      <h2>Medicine Book</h2>
-      {error && <div className="error-message">{error}</div>}
-      <button onClick={handleLogin} disabled={isLoading}>
-        {isLoading ? (
-          'Signing in...'
-        ) : (
-          <>
-            <img src={GoogleIcon} alt="Google" className="google-icon" />
-            Sign in with Google
-          </>
-        )}
-      </button>
+    <div className="login-container page-container">
+      <div className="login-card card-container">
+        <h2 className="section-title text-center">Medicine Book</h2>
+        {error && <div className="error-message">{error}</div>}
+        <button 
+          onClick={handleLogin} 
+          disabled={isLoading}
+          className="login-button"
+        >
+          {isLoading ? (
+            'Signing in...'
+          ) : (
+            <>
+              <img src={GoogleIcon} alt="Google" className="google-icon" />
+              Sign in with Google
+            </>
+          )}
+        </button>
+      </div>
     </div>
   );
 }

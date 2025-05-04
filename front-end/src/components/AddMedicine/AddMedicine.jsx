@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { auth } from '../../configurations/firebase';
 import { signOut } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-import '../../styles/addmedicine.css';
 import { addMedicine } from '../../services/apiService';
 import Header from '../Header';
 import MedicineForm from './MedicineForm';
 import { DURATION_TYPES, RECURRENCE_PATTERNS, FOOD_RELATIONS, generateId } from '../common/constants';
+import '../../styles/common.css';
+import '../../styles/AddMedicine.css';
 
 function AddMedicine() {
   const navigate = useNavigate();
@@ -342,25 +343,29 @@ function AddMedicine() {
   };
 
   return (
-    <div className="home-container">
-      <Header onLogout={handleLogout} />
+    <div className="page-container">
+      <Header title="Add Medicine" onLogout={handleLogout} />
       
-      <MedicineForm
-        formData={formData}
-        newCustomTime={newCustomTime}
-        handleChange={handleChange}
-        handleCustomTimeChange={handleCustomTimeChange}
-        addCustomTime={addCustomTime}
-        removeCustomTime={removeCustomTime}
-        handleDaySelection={handleDaySelection}
-        handleDateSelection={handleDateSelection}
-        handleSubmit={handleSubmit}
-        isSubmitting={isSubmitting}
-        submitMessage={submitMessage}
-        formErrors={formErrors}
-        customTimeError={customTimeError}
-        getRecurrenceOptions={getRecurrenceOptions}
-      />
+      <div className="content-container">
+        <div className="card-container">
+          <MedicineForm
+            formData={formData}
+            newCustomTime={newCustomTime}
+            handleChange={handleChange}
+            handleCustomTimeChange={handleCustomTimeChange}
+            addCustomTime={addCustomTime}
+            removeCustomTime={removeCustomTime}
+            handleDaySelection={handleDaySelection}
+            handleDateSelection={handleDateSelection}
+            handleSubmit={handleSubmit}
+            isSubmitting={isSubmitting}
+            submitMessage={submitMessage}
+            formErrors={formErrors}
+            customTimeError={customTimeError}
+            getRecurrenceOptions={getRecurrenceOptions}
+          />
+        </div>
+      </div>
     </div>
   );
 }

@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import '../styles/Header.css'; 
 
-const Header = ({ onLogout, title }) => {
+const Header = ({ onLogout, title = "Medicine Book" }) => {
   const location = useLocation();
   
   return (

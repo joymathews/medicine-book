@@ -1,22 +1,6 @@
-.medicine-list-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-.medicine-list-content {
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-  width: 100%;
-}
-
+/* MedicineList specific styles */
 .no-medicines {
-  text-align: center;
   padding: 40px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  margin-top: 20px;
 }
 
 .table-container {

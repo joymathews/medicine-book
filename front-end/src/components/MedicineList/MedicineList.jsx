@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Header from '../Header';
 import { auth } from '../../configurations/firebase';
 import { signOut } from 'firebase/auth';
+import '../../styles/common.css';
 import '../../styles/MedicineList.css'; 
 
 const MedicineList = ({ user }) => {
@@ -59,42 +60,56 @@ const MedicineList = ({ user }) => {
     }
   };
 
-  if (loading) return <div>Loading medicines...</div>;
+  if (loading) {
+    return (
+      <div className="page-container">
+        <Header title="Your Medicines" onLogout={handleLogout} />
+        <div className="content-container">
+          <div className="card-container text-center">
+            <p>Loading medicines...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="medicine-list-container">
+    <div className="page-container">
       <Header title="Your Medicines" onLogout={handleLogout} />
       
-      <div className="medicine-list-content">
+      <div className="content-container">
         {medicines.length === 0 ? (
-          <div className="no-medicines">
+          <div className="card-container no-medicines text-center">
             <p>You don't have any medicines yet.</p>
             <p>Click on "Add Medicine" in the header to add your first medicine.</p>
           </div>
         ) : (
-          <div className="table-container">
-            <table className="medicines-table">
-              <thead>
-                <tr>
-                  <th>Medicine Name</th>
-                  <th>Prescription Date</th>
-                  <th>Duration</th>
-                  <th>Recurrence Pattern</th>
-                  <th>When to Take</th>
-                </tr>
-              </thead>
-              <tbody>
-                {medicines.map(medicine => (
-                  <tr key={medicine.id}>
-                    <td>{medicine.name}</td>
-                    <td>{medicine.prescriptionDate}</td>
-                    <td>{medicine.duration}</td>
-                    <td>{medicine.recurrencePattern}</td>
-                    <td>{medicine.whenToTake}</td>
+          <div className="card-container">
+            <h2 className="section-title">Your Medicine Schedule</h2>
+            <div className="table-container">
+              <table className="medicines-table">
+                <thead>
+                  <tr>
+                    <th>Medicine Name</th>
+                    <th>Prescription Date</th>
+                    <th>Duration</th>
+                    <th>Recurrence Pattern</th>
+                    <th>When to Take</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {medicines.map(medicine => (
+                    <tr key={medicine.id}>
+                      <td>{medicine.name}</td>
+                      <td>{medicine.prescriptionDate}</td>
+                      <td>{medicine.duration}</td>
+                      <td>{medicine.recurrencePattern}</td>
+                      <td>{medicine.whenToTake}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
       </div>
