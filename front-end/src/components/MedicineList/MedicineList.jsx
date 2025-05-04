@@ -9,41 +9,97 @@ import '../../styles/MedicineList.css';
 const MedicineList = ({ user }) => {
   const [medicines, setMedicines] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  // Helper function to format dosage object
+  const formatDosage = (dosage) => {
+    if (!dosage) return 'N/A';
+    
+    const times = [];
+    
+    if (dosage.morning?.enabled) {
+      const relation = dosage.morning.foodRelation ? ` (${formatFoodRelation(dosage.morning.foodRelation)})` : '';
+      times.push(`Morning${relation}`);
+    }
+    
+    if (dosage.noon?.enabled) {
+      const relation = dosage.noon.foodRelation ? ` (${formatFoodRelation(dosage.noon.foodRelation)})` : '';
+      times.push(`Noon${relation}`);
+    }
+    
+    if (dosage.night?.enabled) {
+      const relation = dosage.night.foodRelation ? ` (${formatFoodRelation(dosage.night.foodRelation)})` : '';
+      times.push(`Night${relation}`);
+    }
+    
+    return times.length > 0 ? times.join(', ') : 'N/A';
+  };
+  
+  // Helper to format food relation
+  const formatFoodRelation = (relation) => {
+    if (!relation) return '';
+    
+    const relationMap = {
+      'BEFORE': 'Before Food',
+      'AFTER': 'After Food',
+      'WITH': 'With Food'
+    };
+    
+    return relationMap[relation] || relation;
+  };
+  
+  // Helper to format duration
+  const formatDuration = (duration) => {
+    if (!duration || !duration.value) return 'N/A';
+    
+    const typeMap = {
+      'DAYS': 'day(s)',
+      'WEEKS': 'week(s)',
+      'MONTHS': 'month(s)'
+    };
+    
+    const type = typeMap[duration.type] || duration.type.toLowerCase();
+    return `${duration.value} ${type}`;
+  };
+
   useEffect(() => {
-    // Here you would fetch the user's medicines from your database
-    // This is just dummy data for demonstration
     const fetchMedicines = async () => {
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+      
       try {
-        // Replace this with your actual API call
-        // const response = await fetch(`your-api/medicines/${user.uid}`);
-        // const data = await response.json();
+        // Get the auth token
+        const token = await user.getIdToken();
         
-        // Dummy data
-        const dummyData = [
-          {
-            id: '1',
-            name: 'Amoxicillin',
-            prescriptionDate: '2025-04-28',
-            duration: '10 days',
-            recurrencePattern: 'Every 8 hours',
-            whenToTake: 'After meals'
-          },
-          {
-            id: '2',
-            name: 'Lisinopril',
-            prescriptionDate: '2025-04-15',
-            duration: '30 days',
-            recurrencePattern: 'Daily',
-            whenToTake: 'Morning'
+        // Call the getMedicines API
+        const apiUrl = import.meta.env.VITE_API_BASE_URL;
+        const response = await fetch(`${apiUrl}/getMedicines`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
           }
-        ];
+        });
         
-        setMedicines(dummyData);
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status} - ${response.statusText}`);
+        }
+        
+        const responseData = await response.json();
+        
+        if (responseData.success) {
+          setMedicines(responseData.data || []);
+        } else {
+          throw new Error(responseData.message || 'Failed to fetch medicines');
+        }
+        
         setLoading(false);
       } catch (error) {
         console.error('Error fetching medicines:', error);
+        setError(error.message);
         setLoading(false);
       }
     };
@@ -73,6 +129,25 @@ const MedicineList = ({ user }) => {
     );
   }
 
+  if (error) {
+    return (
+      <div className="page-container">
+        <Header title="Your Medicines" onLogout={handleLogout} />
+        <div className="content-container">
+          <div className="card-container error-container text-center">
+            <p>Error loading medicines: {error}</p>
+            <button 
+              className="btn primary-btn" 
+              onClick={() => window.location.reload()}
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="page-container">
       <Header title="Your Medicines" onLogout={handleLogout} />
@@ -91,20 +166,22 @@ const MedicineList = ({ user }) => {
                 <thead>
                   <tr>
                     <th>Medicine Name</th>
-                    <th>Prescription Date</th>
+                    <th>Doctor</th>
+                    <th>Purpose</th>
+                    <th>Dosage</th>
                     <th>Duration</th>
-                    <th>Recurrence Pattern</th>
-                    <th>When to Take</th>
+                    <th>Notes</th>
                   </tr>
                 </thead>
                 <tbody>
                   {medicines.map(medicine => (
                     <tr key={medicine.id}>
-                      <td>{medicine.name}</td>
-                      <td>{medicine.prescriptionDate}</td>
-                      <td>{medicine.duration}</td>
-                      <td>{medicine.recurrencePattern}</td>
-                      <td>{medicine.whenToTake}</td>
+                      <td>{medicine.medicineName || 'N/A'}</td>
+                      <td>{medicine.doctor || 'N/A'}</td>
+                      <td>{medicine.purpose || 'N/A'}</td>
+                      <td>{formatDosage(medicine.dosage)}</td>
+                      <td>{formatDuration(medicine.duration)}</td>
+                      <td>{medicine.notes || 'N/A'}</td>
                     </tr>
                   ))}
                 </tbody>
