@@ -24,6 +24,18 @@ export const addMedicine = async (medicineData) => {
       body: JSON.stringify(medicineData)
     });
     
+    // Check if the response status is within the successful range (200-299)
+    if (!response.ok) {
+      // Try to parse error details if available
+      try {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
+      } catch (parseError) {
+        // If parsing fails, throw a generic error with the status code
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+    }
+    
     const data = await response.json();
     if (!data.success) {
       throw new Error(data.message || 'Failed to add medicine');
