@@ -1,0 +1,19 @@
+{
+  "name": "medicine-book",
+  "version": "1.0.0",
+  "description": "Medicine tracking application",
+  "scripts": {
+    "build:frontend": "npm --prefix ./front-end run build",
+    "deploy:functions": "firebase deploy --only functions",
+    "deploy:hosting": "firebase deploy --only hosting",
+    "deploy:all": "npm run build:frontend && firebase deploy",
+    "serve:frontend": "npm --prefix ./front-end run dev"
+  },
+  "devDependencies": {
+    "firebase-tools": "^12.8.0"
+  },
+  "engines": {
+    "node": "20"
+  },
+  "private": true
+}

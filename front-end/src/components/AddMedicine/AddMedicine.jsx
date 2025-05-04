@@ -3,7 +3,7 @@ import { auth } from '../../configurations/firebase';
 import { signOut } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/addmedicine.css';
-
+import { addMedicine } from '../../services/apiService';
 import Header from './Header';
 import MedicineForm from './MedicineForm';
 import { DURATION_TYPES, RECURRENCE_PATTERNS, FOOD_RELATIONS, generateId } from '../common/constants';
@@ -257,11 +257,48 @@ function AddMedicine() {
     }
     
     setIsSubmitting(true);
-    
     try {
-      // Here you would normally save the data to your database
-      console.log('Medicine data submitted:', formData);
-      setSubmitMessage('Medicine details saved successfully!');
+      // Prepare data for API
+      const medicineData = {
+        medicineName: formData.medicineName,
+        doctor: formData.doctor,
+        purpose: formData.purpose,
+        prescriptionDate: formData.prescriptionDate,
+        duration: {
+          value: formData.durationType !== DURATION_TYPES.LIFELONG ? formData.durationValue : null,
+          type: formData.durationType.toUpperCase()
+        },
+        recurrence: {
+          pattern: formData.recurrencePattern.toUpperCase(),
+          interval: formData.recurrencePattern === RECURRENCE_PATTERNS.CUSTOM ? formData.recurrenceInterval : null,
+          specificDays: formData.recurrencePattern === RECURRENCE_PATTERNS.SPECIFIC_DAYS ? formData.specificDays : null,
+          specificDates: formData.recurrencePattern === RECURRENCE_PATTERNS.SPECIFIC_DATES ? formData.specificDates : null
+        },
+        dosage: {
+          morning: {
+            enabled: formData.morningDose,
+            foodRelation: formData.morningDose ? formData.morningFoodRelation.toUpperCase() : null
+          },
+          noon: {
+            enabled: formData.noonDose,
+            foodRelation: formData.noonDose ? formData.noonFoodRelation.toUpperCase() : null
+          },
+          night: {
+            enabled: formData.nightDose,
+            foodRelation: formData.nightDose ? formData.nightFoodRelation.toUpperCase() : null
+          },
+          customTimes: formData.customTimes.map(time => ({
+            id: time.id,
+            time: time.time,
+            foodRelation: time.foodRelation.toUpperCase()
+          }))
+        },
+        notes: formData.notes
+      };
+    
+      // Save medicine data using API
+      const result = await addMedicine(medicineData);
+      setSubmitMessage(result.message || 'Medicine details saved successfully!');
       
       // Reset form and errors after successful submission
       setFormData({
@@ -284,17 +321,13 @@ function AddMedicine() {
         nightFoodRelation: FOOD_RELATIONS.AFTER,
         customTimes: []
       });
-      
       setFormErrors({});
-      
-      // Clear success message after 3 seconds
-      setTimeout(() => {
-        setSubmitMessage('');
-      }, 3000);
+      setCustomTimeError('');
     } catch (error) {
       console.error('Error saving medicine details:', error);
-      setSubmitMessage('Failed to save medicine details. Please try again.');
-    } finally {
+      setSubmitMessage(error.message || 'Failed to save medicine details. Please try again.');
+    }
+    finally {
       setIsSubmitting(false);
     }
   };
