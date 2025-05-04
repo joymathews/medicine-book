@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/Login';
 import AddMedicine from './components/AddMedicine/AddMedicine';
+import MedicineList from './components/MedicineList/MedicineList';
 import ProtectedRoute from './components/ProtectedRoute';
 import { auth } from './configurations/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -23,7 +24,17 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<Login setUser={setUser} />} />
+      <Route path="/" element={
+        user ? <Navigate to="/medicines" /> : <Login setUser={setUser} />
+      } />
+      <Route 
+        path="/medicines" 
+        element={
+          <ProtectedRoute user={user}>
+            <MedicineList user={user} />
+          </ProtectedRoute>
+        } 
+      />
       <Route 
         path="/add-medicine" 
         element={

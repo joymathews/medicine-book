@@ -4,7 +4,7 @@ import { signOut } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/addmedicine.css';
 import { addMedicine } from '../../services/apiService';
-import Header from './Header';
+import Header from '../Header';
 import MedicineForm from './MedicineForm';
 import { DURATION_TYPES, RECURRENCE_PATTERNS, FOOD_RELATIONS, generateId } from '../common/constants';
 
