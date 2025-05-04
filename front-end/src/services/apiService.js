@@ -2,6 +2,9 @@ import { httpsCallable } from 'firebase/functions';
 import { functions } from '../configurations/firebase';
 import { getAuth } from 'firebase/auth';
 
+// Get the API base URL from environment variables
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 /**
  * Adds a medicine to the database
  * @param {Object} medicineData - The medicine data to add
@@ -12,7 +15,7 @@ export const addMedicine = async (medicineData) => {
     const auth = getAuth();
     const token = await auth.currentUser.getIdToken();
     
-    const response = await fetch('http://localhost:5001/medicine-book-132df/us-central1/addMedicine', {
+    const response = await fetch(`${API_BASE_URL}/addMedicine`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
