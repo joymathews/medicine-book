@@ -1,21 +1,19 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import MedicineList from '../MedicineList';
 
-// Mock auth module
-vi.mock('../../../configurations/firebase', async () => {
-  const actual = await vi.importActual('../../../configurations/firebase');
-  return {
-    ...actual,
-    auth: {
-      currentUser: {
-        getIdToken: () => Promise.resolve('fake-token')
-      }
-    },
-    signOut: vi.fn()
-  };
-});
+// Mock Firebase BEFORE importing the component
+vi.mock('../../../configurations/firebase', () => ({
+  auth: {
+    currentUser: {
+      getIdToken: vi.fn().mockResolvedValue('fake-token')
+    }
+  },
+  signOut: vi.fn()
+}));
+
+// Import component after mocking dependencies
+import MedicineList from '../MedicineList';
 
 // Mock fetch
 global.fetch = vi.fn();

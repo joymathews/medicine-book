@@ -1,0 +1,31 @@
+name: Unit Tests
+
+on:
+  pull_request:
+    branches: [ main, master ]
+  push:
+    branches: [ main, master ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: './front-end/package-lock.json'
+          
+      - name: Clean install dependencies
+        working-directory: ./front-end
+        run: |
+          rm -rf node_modules package-lock.json
+          npm install
+          
+      # Continue with your test steps
+      - name: Run tests
+        working-directory: ./front-end
+        run: npm test -- --coverage
