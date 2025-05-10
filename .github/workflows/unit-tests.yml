@@ -23,7 +23,7 @@ jobs:
         working-directory: ./front-end
         run: |
           rm -rf node_modules package-lock.json
-          npm ci
+          npm install
           
       # Continue with your test steps
       - name: Run tests
