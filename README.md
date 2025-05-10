@@ -13,3 +13,5 @@ If you are developing a production application, we recommend using TypeScript wi
 
 
 To Start locally use the command firebase emulators:start then in another tab npm run serve:frontend, both commands have to be executed from root directory
+
+Adding a line to for github action test
