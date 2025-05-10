@@ -33,6 +33,16 @@ const MedicineList = ({ user }) => {
       times.push(`Night${relation}`);
     }
     
+    // Add custom times to the dosage display
+    if (dosage.customTimes && Array.isArray(dosage.customTimes) && dosage.customTimes.length > 0) {
+      dosage.customTimes.forEach(customTime => {
+        if (customTime.time) {
+          const relation = customTime.foodRelation ? ` (${formatFoodRelation(customTime.foodRelation)})` : '';
+          times.push(`${customTime.time}${relation}`);
+        }
+      });
+    }
+    
     return times.length > 0 ? times.join(', ') : 'N/A';
   };
   
