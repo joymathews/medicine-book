@@ -29,10 +29,3 @@ jobs:
       - name: Run tests
         working-directory: ./front-end
         run: npm test -- --coverage
-
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: front-end/coverage/
