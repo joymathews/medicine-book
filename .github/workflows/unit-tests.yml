@@ -28,7 +28,7 @@ jobs:
       # Continue with your test steps
       - name: Run tests
         working-directory: ./front-end
-        run: npm test
+        run: npm test -- --coverage
 
       - name: Upload test results
         if: always()
