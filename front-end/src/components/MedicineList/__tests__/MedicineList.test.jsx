@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import MedicineList from '../MedicineList';
-import * as firebase from '../../../configurations/firebase';
 
 // Mock auth module
 vi.mock('../../../configurations/firebase', async () => {
