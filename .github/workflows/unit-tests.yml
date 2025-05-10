@@ -7,30 +7,28 @@ on:
     branches: [ main, master ]
 
 jobs:
-  test:
-    name: Run Unit Tests
+  build-and-test:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
+      - uses: actions/checkout@v4
+      
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: 'front-end/package-lock.json'
-
-      - name: Install dependencies
+          cache-dependency-path: './front-end/package-lock.json'
+          
+      - name: Clean install dependencies
+        working-directory: ./front-end
         run: |
-          cd front-end
-          npm ci
-
-      - name: Run unit tests
-        run: |
-          cd front-end
-          npm test
+          rm -rf node_modules package-lock.json
+          npm install
+          
+      # Continue with your test steps
+      - name: Run tests
+        working-directory: ./front-end
+        run: npm test
 
       - name: Upload test results
         if: always()
