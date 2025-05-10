@@ -10,7 +10,7 @@
     "serve:frontend": "npm --prefix ./front-end run dev"
   },
   "devDependencies": {
-    "firebase-tools": "^12.8.0"
+    "firebase-tools": "^14.3.1"
   },
   "engines": {
     "node": "20"
