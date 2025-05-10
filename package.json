@@ -10,7 +10,11 @@
     "serve:frontend": "npm --prefix ./front-end run dev"
   },
   "devDependencies": {
-    "firebase-tools": "^12.8.0"
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "firebase-tools": "^12.8.0",
+    "jsdom": "^26.1.0",
+    "vitest": "^3.1.3"
   },
   "engines": {
     "node": "20"

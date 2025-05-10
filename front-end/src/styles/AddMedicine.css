@@ -1,24 +1,6 @@
-/* ================ LAYOUT COMPONENTS ================ */
-.home-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-  border-bottom: 1px solid #e0e0e0;
-  padding-bottom: 10px;
-}
-
+/* ================ FORM ELEMENTS ================ */
 .form-container {
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
 }
 
 .form-group {
@@ -44,7 +26,6 @@
   color: #333;
 }
 
-/* ================ FORM ELEMENTS ================ */
 /* General form elements */
 label {
   display: block;
@@ -126,21 +107,6 @@ input[type="radio"] {
 }
 
 /* ================ BUTTONS ================ */
-/* Logout button */
-.logout-button {
-  background-color: #f44336;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.logout-button:hover {
-  background-color: #d32f2f;
-}
-
 /* Submit button */
 .submit-button {
   background-color: #4caf50;
@@ -231,35 +197,6 @@ input[type="radio"] {
   background-color: #4caf50;
   color: white;
   border-color: #4caf50;
-}
-
-/* ================ NOTIFICATION MESSAGES ================ */
-.success-message, .error-message {
-  padding: 10px;
-  border-radius: 4px;
-  margin-top: 15px;
-  text-align: center;
-}
-
-.success-message {
-  background-color: #dff0d8;
-  color: #3c763d;
-}
-
-.error-message {
-  background-color: #f2dede;
-  color: #a94442;
-}
-
-/* Animation for form feedback */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.success-message,
-.error-message {
-  animation: fadeIn 0.3s ease-out;
 }
 
 /* ================ DOSAGE SCHEDULING ================ */
@@ -401,10 +338,8 @@ input[type="radio"] {
   background-color: #f0f0f0;
   border-radius: 4px;
   font-size: 0.95em;
-  border-left: 3px solid #4caf50; /* Green left border instead of character */
+  border-left: 3px solid #4caf50;
 }
-
-/* Removed the ::before pseudo-element with the ⟳ character */
 
 .recurrence-detail {
   margin-top: 10px;

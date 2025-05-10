@@ -7,13 +7,20 @@
   background-color: #f0f4f8;
 }
 
+.login-card {
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  padding: 40px 20px !important;
+}
+
 .login-container h2 {
   margin-bottom: 2rem;
   color: #2c3e50;
   font-size: 2.5rem;
 }
 
-.login-container button {
+.login-button {
   padding: 12px 24px;
   font-size: 1.1rem;
   background-color: #4285F4;
@@ -23,29 +30,21 @@
   cursor: pointer;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   transition: background-color 0.3s;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 240px;
 }
 
-.login-container button:hover {
+.login-button:hover {
   background-color: #357ae8;
 }
 
 .google-icon {
   width: 20px;
   height: 20px;
-}
-
-.error-message {
-  padding: 10px 15px;
-  background-color: #ffebee;
-  color: #c62828;
-  border: 1px solid #ef9a9a;
-  border-radius: 4px;
-  margin-bottom: 20px;
-  width: 80%;
-  max-width: 400px;
-  text-align: center;
 }
 
 button:disabled {
